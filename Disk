@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# ==============================
+# Disk Usage Alert Script
+# ==============================
+
+THRESHOLD=80        # Set limit (%)
+PARTITION="/"       # Partition to monitor
+LOG_FILE="disk_alert.log"
+
+# Get disk usage (remove % sign)
+USAGE=$(df -h "$PARTITION" | awk 'NR==2 {print $5}' | sed 's/%//')
+
+echo "Current Disk Usage: $USAGE%"
+
+# Check threshold
+if [ "$USAGE" -ge "$THRESHOLD" ]; then
+    MESSAGE="⚠️ ALERT: Disk usage is at ${USAGE}% on ${PARTITION}"
+
+    echo "$MESSAGE"
+    
+    # Save to log file
+    echo "$(date): $MESSAGE" >> "$LOG_FILE"
+
+else
+    echo "✅ Disk usage is under control."
+fi
