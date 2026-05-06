@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Store child PID globally
+CHILD_PID=""
+
+display_menu() {
+    echo ""
+    echo "======================================"
+    echo "   UNIX SYSTEM CALLS (BASH SIM)       "
+    echo "======================================"
+    echo "1. Fork (Create Child Process)"
+    echo "2. Show Process (ps)"
+    echo "3. Wait / Join Child"
+    echo "4. Exec (Replace Process)"
+    echo "5. Exit"
+    echo "======================================"
+    echo -n "Enter your choice: "
+}
+
+fork_process() {
+    echo "Creating child process..."
+
+    (
+        echo "👉 Child Process Running (PID: $$)"
+        sleep 5
+        echo "👉 Child Process Finished"
+    ) &
+
+    CHILD_PID=$!
+    echo "✅ Parent PID: $$"
+    echo "✅ Child PID: $CHILD_PID"
+}
+
+show_process() {
+    echo ""
+    echo "Current Processes:"
+    echo "--------------------------------------"
+    ps -f | grep $$ | grep -v grep
+}
+
+wait_process() {
+    if [ -z "$CHILD_PID" ]; then
+        echo "❌ No child process found!"
+        return
+    fi
+
+    echo "Waiting for child process (PID: $CHILD_PID)..."
+    wait $CHILD_PID
+    echo "✅ Child process completed!"
+    CHILD_PID=""
+}
+
+exec_process() {
+    echo "⚠️ This will replace current shell with 'ls -l'"
+    read -p "Are you sure? (yes/no): " confirm
+
+    if [[ "$confirm" == "yes" || "$confirm" == "y" ]]; then
+        exec ls -l
+    else
+        echo "Cancelled."
+    fi
+}
+
+# -------------------------------
+# Main Loop
+# -------------------------------
+while true
+do
+    display_menu
+    read choice
+
+    case $choice in
+        1) fork_process ;;
+        2) show_process ;;
+        3) wait_process ;;
+        4) exec_process ;;
+        5) echo "Exiting..."; exit 0 ;;
+        *) echo "❌ Invalid choice!" ;;
+    esac
+
+    echo ""
+    read -p "Press Enter to continue..."
+done
