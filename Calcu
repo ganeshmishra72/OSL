@@ -1,28 +1,52 @@
-# !/bin/bash
+#!/bin/bash
 
-# Take user Input
-echo "Enter Two numbers : "
-read a
-read b
+# While loop to repeat calculator operations
+while true
+do
+  # Take user Input
+  echo "Enter Two numbers : "
+  read a
+  read b
 
-# Input type of operation
-echo "Enter Choice :"
-echo "1. Addition"
-echo "2. Subtraction"
-echo "3. Multiplication"
-echo "4. Division"
-read ch
+  # Input type of operation
+  echo "Enter Choice :"
+  echo "1. Addition"
+  echo "2. Subtraction"
+  echo "3. Multiplication"
+  echo "4. Division"
+  echo "5. Exit"
+  read ch
 
-# Switch Case to perform
-# calculator operations
-case $ch in
-  1)res=`echo $a + $b | bc`
-  ;;
-  2)res=`echo $a - $b | bc`
-  ;;
-  3)res=`echo $a \* $b | bc`
-  ;;
-  4)res=`echo "scale=2; $a / $b" | bc`
-  ;;
-esac
-echo "Result : $res"
+  # Switch Case to perform
+  # calculator operations
+  case $ch in
+    1)res=`echo $a + $b | bc`
+    echo "Result : $res"
+    ;;
+    2)res=`echo $a - $b | bc`
+    echo "Result : $res"
+    ;;
+    3)res=`echo $a \* $b | bc`
+    echo "Result : $res"
+    ;;
+    4)
+    # Check if denominator is zero
+    if [ $b -eq 0 ]
+    then
+      echo "Error: Cannot divide by zero!"
+    else
+      res=`echo "scale=2; $a / $b" | bc`
+      echo "Result : $res"
+    fi
+    ;;
+    5)
+    echo "Thank you for using Calculator. Goodbye!"
+    exit 0
+    ;;
+    *)
+    echo "Invalid Choice! Please select a valid option (1-5)"
+    ;;
+  esac
+
+  echo ""
+done
