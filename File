@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# File Management Menu Script
+
+display_menu() {
+    echo ""
+    echo "======================================"
+    echo "       FILE MANAGEMENT SYSTEM         "
+    echo "======================================"
+    echo "1. Create File"
+    echo "2. Delete File"
+    echo "3. Copy File"
+    echo "4. List All Files"
+    echo "5. Read File"
+    echo "6. Exit"
+    echo "======================================"
+    echo -n "Enter your choice (1-6): "
+}
+
+create_file() {
+    read -p "Enter file name to create: " filename
+    
+    if [ -z "$filename" ]; then
+        echo "Error: File name cannot be empty!"
+        return
+    fi
+    
+    if [ -f "$filename" ]; then
+        echo "Error: File '$filename' already exists!"
+    else
+        touch "$filename"
+        echo "Success: File '$filename' created successfully!"
+    fi
+}
+
+delete_file() {
+    read -p "Enter file name to delete: " filename
+    
+    if [ -z "$filename" ]; then
+        echo "Error: File name cannot be empty!"
+        return
+    fi
+    
+    if [ ! -f "$filename" ]; then
+        echo "Error: File '$filename' does not exist!"
+        return
+    fi
+    
+    read -p "Are you sure? (yes/no): " confirm
+    
+    if [[ "$confirm" == "yes" || "$confirm" == "y" ]]; then
+        rm "$filename" && echo "Deleted successfully!" || echo "Delete failed!"
+    else
+        echo "Cancelled."
+    fi
+}
+
+copy_file() {
+    read -p "Enter source file: " source_file
+    
+    if [ ! -f "$source_file" ]; then
+        echo "Error: Source file does not exist!"
+        return
+    fi
+    
+    read -p "Enter destination file: " dest_file
+    
+    if [ -f "$dest_file" ]; then
+        echo "Error: Destination file already exists!"
+        return
+    fi
+    
+    cp "$source_file" "$dest_file" && \
+    echo "Copied successfully!" || echo "Copy failed!"
+}
+
+list_files() {
+    echo ""
+    echo "Files in current directory:"
+    echo "======================================"
+    
+    if [ "$(ls -A)" ]; then
+        ls -lh
+    else
+        echo "No files found."
+    fi
+    
+    echo "======================================"
+}
+
+read_file() {
+    read -p "Enter file name to read: " filename
+    
+    if [ ! -f "$filename" ]; then
+        echo "Error: File does not exist!"
+        return
+    fi
+    
+    if [ ! -r "$filename" ]; then
+        echo "Error: File not readable!"
+        return
+    fi
+    
+    echo ""
+    echo "======================================"
+    cat "$filename"
+    echo "======================================"
+}
+
+exit_program() {
+    echo "Exiting..."
+    exit 0
+}
+
+main() {
+    while true; do
+        display_menu
+        read choice
+        
+        case $choice in
+            1) create_file ;;
+            2) delete_file ;;
+            3) copy_file ;;
+            4) list_files ;;
+            5) read_file ;;
+            6) exit_program ;;
+            *) echo "Invalid choice!" ;;
+        esac
+        
+        read -p "Press Enter to continue..."
+    done
+}
+
+# Start program
+main
